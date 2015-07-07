@@ -1,11 +1,15 @@
 apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = '1.8'
 
 repositories {
   jcenter()
 }
 
 dependencies {
+  compile 'jivesoftware:smack:3.1.0'
+  testCompile "org.testfx:testfx-core:4.0.+"
   testCompile 'junit:junit:4.12'
 }
 
-apply plugin: 'idea'
