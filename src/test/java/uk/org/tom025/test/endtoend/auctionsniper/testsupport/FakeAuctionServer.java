@@ -1,13 +1,15 @@
 package uk.org.tom025.test.endtoend.auctionsniper.testsupport;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -37,12 +39,9 @@ public class FakeAuctionServer {
       AUCTION_PASSWORD,
       AUCTION_RESOURCE);
     connection.getChatManager().addChatListener(
-      new ChatManagerListener() {
-        @Override
-        public void chatCreated(Chat chat, boolean createdLocally) {
-          currentChat = chat;
-          chat.addMessageListener(messageListener);
-        }
+      (chat, createdLocally) -> {
+        currentChat = chat;
+        chat.addMessageListener(messageListener);
       }
     );
   }
@@ -61,7 +60,7 @@ public class FakeAuctionServer {
 
   private static class SingleMessageListener implements MessageListener {
     private final ArrayBlockingQueue<Message> messages =
-      new ArrayBlockingQueue<Message>(1);
+      new ArrayBlockingQueue<>(1);
 
     @Override
     public void processMessage(Chat chat, Message message) {

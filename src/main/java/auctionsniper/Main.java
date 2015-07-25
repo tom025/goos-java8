@@ -1,8 +1,9 @@
 package auctionsniper;
 
+import auctionsniper.ui.controller.MainController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -13,11 +14,11 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    final StackPane root = new StackPane();
-    final Label label = new Label("foo");
-    label.setId("status");
+    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+    final StackPane root = loader.load();
+    final MainController mainController = loader.getController();
 
-    root.getChildren().add(label);
+    primaryStage.setTitle("Auction Sniper");
     primaryStage.setScene(new Scene(root, 800, 600));
     primaryStage.show();
   }

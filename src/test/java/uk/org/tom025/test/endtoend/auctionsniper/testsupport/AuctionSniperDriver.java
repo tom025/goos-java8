@@ -20,8 +20,8 @@ public class AuctionSniperDriver {
   }
 
   public void showsSniperStatus(String status) {
-    verifyThat("#status", isNotNull());
-    verifyThat("#status", hasText(status));
+    verifyThat("#sniperStatus", isNotNull());
+    verifyThat("#sniperStatus", hasText(status));
   }
 
   public void dispose() {
