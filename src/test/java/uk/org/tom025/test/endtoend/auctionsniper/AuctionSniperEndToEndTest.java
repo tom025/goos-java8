@@ -5,8 +5,6 @@ import org.junit.Test;
 import uk.org.tom025.test.endtoend.auctionsniper.testsupport.ApplicationRunner;
 import uk.org.tom025.test.endtoend.auctionsniper.testsupport.FakeAuctionServer;
 
-import java.util.concurrent.TimeoutException;
-
 public class AuctionSniperEndToEndTest {
   private final FakeAuctionServer auction = new FakeAuctionServer("item-54321");
   private final ApplicationRunner application = new ApplicationRunner();

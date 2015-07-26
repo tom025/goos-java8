@@ -2,7 +2,6 @@ package uk.org.tom025.test.endtoend.auctionsniper.testsupport;
 
 import auctionsniper.Main;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import org.testfx.api.FxToolkit;
 
 import java.util.concurrent.TimeoutException;
@@ -19,7 +18,13 @@ public class ApplicationRunner {
 
   public void startBiddingIn(final FakeAuctionServer auction) throws Exception {
     FxToolkit.registerPrimaryStage();
-    application = FxToolkit.setupApplication(Main.class);
+    application = FxToolkit.setupApplication(
+      Main.class,
+      XMPP_HOSTNAME,
+      SNIPER_ID,
+      SNIPER_PASSWORD,
+      auction.getItemId()
+    );
     driver = AuctionSniperDriver.newInstance();
     driver.showsSniperStatus(STATUS_JOINING);
   }
