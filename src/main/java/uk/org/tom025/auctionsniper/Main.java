@@ -1,6 +1,6 @@
-package auctionsniper;
+package uk.org.tom025.auctionsniper;
 
-import auctionsniper.ui.controller.MainController;
+import uk.org.tom025.auctionsniper.ui.controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -18,8 +17,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static java.lang.String.format;
+import static uk.org.tom025.auctionsniper.ui.controller.MainController.*;
 
-public class Main extends Application {
+public class Main extends Application implements SniperListener {
   private static final int ARG_HOSTNAME = 0;
   private static final int ARG_USERNAME = 1;
   private static final int ARG_PASSWORD = 2;
@@ -27,10 +27,13 @@ public class Main extends Application {
   private static final String AUCTION_RESOURCE = "Auction";
   private static final String ITEM_ID_AS_LOGIN = "auction-%s";
   private static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
+  public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
+  public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
   private final ExecutorService executorService = Executors.newCachedThreadPool();
   private final CountDownLatch uiReadySignal = new CountDownLatch(1);
   private MainController mainController;
-  private volatile Chat notToBeGCd;
+  private Chat notToBeGCd;
+  private XMPPConnection connection;
 
   public static void main(String... args) throws Exception {
     launch(args);
@@ -39,15 +42,22 @@ public class Main extends Application {
   public void joinAuction(XMPPConnection connection, String itemId) throws XMPPException, InterruptedException {
     final Chat chat = connection.getChatManager().createChat(
       auctionId(itemId, connection),
-      (aChat, message) -> {
-        Platform.runLater(() -> {
-          mainController.showStatus(MainController.STATUS_LOST);
-        });
-      }
+      null
     );
+    Auction auction = new Auction() {
+      @Override
+      public void bid(int amount) {
+        try {
+          chat.sendMessage(format(BID_COMMAND_FORMAT, amount));
+        } catch (XMPPException e) {
+          e.printStackTrace();
+        }
+      }
+    };
+    chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
     notToBeGCd = chat;
     uiReadySignal.await();
-    chat.sendMessage(new Message());
+    chat.sendMessage(JOIN_COMMAND_FORMAT);
   }
 
   @Override
@@ -56,14 +66,12 @@ public class Main extends Application {
     executorService.submit(
       () -> {
         try {
-          joinAuction(
-            connection(
-              args.get(ARG_HOSTNAME),
-              args.get(ARG_USERNAME),
-              args.get(ARG_PASSWORD)
-            ),
-            args.get(ARG_ITEM_ID)
+          connection = connection(
+            args.get(ARG_HOSTNAME),
+            args.get(ARG_USERNAME),
+            args.get(ARG_PASSWORD)
           );
+          joinAuction(connection, args.get(ARG_ITEM_ID));
         } catch (XMPPException | InterruptedException e) {
           throw new RuntimeException(e);
         }
@@ -92,6 +100,11 @@ public class Main extends Application {
     uiReadySignal.countDown();
   }
 
+  @Override
+  public void stop() throws Exception {
+    if (connection != null) { connection.disconnect(); }
+  }
+
   private void startUserInterface(Stage primaryStage) throws java.io.IOException {
     final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
     final StackPane root = loader.load();
@@ -99,5 +112,19 @@ public class Main extends Application {
     primaryStage.setTitle("Auction Sniper");
     primaryStage.setScene(new Scene(root, 800, 600));
     primaryStage.show();
+  }
+
+  @Override
+  public void sniperBidding() {
+    Platform.runLater(() -> {
+      mainController.showStatus(STATUS_BIDDING);
+    });
+  }
+
+  @Override
+  public void sniperLost() {
+    Platform.runLater(() -> {
+      mainController.showStatus(STATUS_LOST);
+    });
   }
 }

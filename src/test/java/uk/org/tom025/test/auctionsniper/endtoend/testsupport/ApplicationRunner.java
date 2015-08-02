@@ -1,18 +1,19 @@
-package uk.org.tom025.test.endtoend.auctionsniper.testsupport;
+package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 
-import auctionsniper.Main;
+import uk.org.tom025.auctionsniper.Main;
 import javafx.application.Application;
 import org.testfx.api.FxToolkit;
+import uk.org.tom025.auctionsniper.ui.controller.MainController;
 
 import java.util.concurrent.TimeoutException;
+
+import static uk.org.tom025.auctionsniper.ui.controller.MainController.*;
 
 public class ApplicationRunner {
 
   private static final String XMPP_HOSTNAME = "localhost";
   private static final String SNIPER_PASSWORD = "sniper";
-  private static final String SNIPER_ID = "sniper";
-  private static final String STATUS_JOINING = "joining";
-  private static final String STATUS_LOST = "lost";
+  public static final String SNIPER_ID = "sniper";
   private AuctionSniperDriver driver;
   private Application application;
 
@@ -35,5 +36,9 @@ public class ApplicationRunner {
 
   public void showsSniperHasLostAuction() {
     driver.showsSniperStatus(STATUS_LOST);
+  }
+
+  public void hasShownSniperIsBidding() {
+    driver.showsSniperStatus(STATUS_BIDDING);
   }
 }

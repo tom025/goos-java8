@@ -1,4 +1,4 @@
-package uk.org.tom025.test.endtoend.auctionsniper.testsupport;
+package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 
 import java.util.concurrent.TimeoutException;
 
@@ -20,9 +20,5 @@ public class AuctionSniperDriver {
     waitForFxEvents();
     verifyThat("#sniperStatus", isNotNull());
     verifyThat("#sniperStatus", hasText(status));
-  }
-
-  public void dispose() {
-//    throw new UnsupportedOperationException("not implemented yet");
   }
 }

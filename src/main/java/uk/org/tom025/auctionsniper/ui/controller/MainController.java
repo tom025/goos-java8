@@ -1,4 +1,4 @@
-package auctionsniper.ui.controller;
+package uk.org.tom025.auctionsniper.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 public class MainController {
   public static final String STATUS_JOINING = "joining";
   public static final String STATUS_LOST = "lost";
+  public static final String STATUS_BIDDING = "bidding";
 
   @FXML private Label sniperStatus;
 
