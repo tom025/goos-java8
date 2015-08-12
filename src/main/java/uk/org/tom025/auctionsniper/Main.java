@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import static java.lang.String.format;
 import static uk.org.tom025.auctionsniper.ui.controller.MainController.*;
 
-public class Main extends Application implements SniperListener {
+public class Main extends Application {
   private static final int ARG_HOSTNAME = 0;
   private static final int ARG_USERNAME = 1;
   private static final int ARG_PASSWORD = 2;
@@ -44,20 +44,15 @@ public class Main extends Application implements SniperListener {
       auctionId(itemId, connection),
       null
     );
-    Auction auction = new Auction() {
-      @Override
-      public void bid(int amount) {
-        try {
-          chat.sendMessage(format(BID_COMMAND_FORMAT, amount));
-        } catch (XMPPException e) {
-          e.printStackTrace();
-        }
-      }
-    };
-    chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
+    Auction auction = new XMPPAuction(chat);
     notToBeGCd = chat;
     uiReadySignal.await();
-    chat.sendMessage(JOIN_COMMAND_FORMAT);
+    chat.addMessageListener(
+      new AuctionMessageTranslator(
+        new AuctionSniper(auction, new AuctionStateDisplayer(mainController))
+      )
+    );
+    auction.join();
   }
 
   @Override
@@ -114,17 +109,49 @@ public class Main extends Application implements SniperListener {
     primaryStage.show();
   }
 
-  @Override
-  public void sniperBidding() {
-    Platform.runLater(() -> {
-      mainController.showStatus(STATUS_BIDDING);
-    });
+
+  private static class XMPPAuction implements Auction {
+    private final Chat chat;
+
+    public XMPPAuction(Chat chat) {
+      this.chat = chat;
+    }
+
+    @Override
+    public void join() {
+      sendMessage(JOIN_COMMAND_FORMAT);
+    }
+
+    @Override
+    public void bid(int amount) {
+      sendMessage(format(BID_COMMAND_FORMAT, amount));
+    }
+
+    private void sendMessage(String message) {
+      try {
+        chat.sendMessage(message);
+      } catch (XMPPException e) {
+        e.printStackTrace();
+      }
+    }
+
   }
 
-  @Override
-  public void sniperLost() {
-    Platform.runLater(() -> {
-      mainController.showStatus(STATUS_LOST);
-    });
+  private static class AuctionStateDisplayer implements SniperListener {
+    private final MainController mainController;
+
+    public AuctionStateDisplayer(MainController mainController) {
+      this.mainController = mainController;
+    }
+
+    @Override
+    public void sniperBidding() {
+      Platform.runLater(() -> mainController.showStatus(STATUS_BIDDING));
+    }
+
+    @Override
+    public void sniperLost() {
+      Platform.runLater(() -> mainController.showStatus(STATUS_LOST));
+    }
   }
 }
