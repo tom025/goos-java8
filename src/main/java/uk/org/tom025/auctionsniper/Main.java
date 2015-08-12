@@ -49,7 +49,7 @@ public class Main extends Application {
     uiReadySignal.await();
     chat.addMessageListener(
       new AuctionMessageTranslator(
-        new AuctionSniper(auction, new AuctionStateDisplayer(mainController))
+        new AuctionSniper(auction, new SniperStateDisplayer(mainController))
       )
     );
     auction.join();
@@ -137,10 +137,10 @@ public class Main extends Application {
 
   }
 
-  private static class AuctionStateDisplayer implements SniperListener {
+  private static class SniperStateDisplayer implements SniperListener {
     private final MainController mainController;
 
-    public AuctionStateDisplayer(MainController mainController) {
+    public SniperStateDisplayer(MainController mainController) {
       this.mainController = mainController;
     }
 
