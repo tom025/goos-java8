@@ -8,12 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.*;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.*;
 
 public class AuctionMessageTranslator implements MessageListener {
   private final AuctionEventListener listener;
+  private final String sniper_id;
 
-  public AuctionMessageTranslator(AuctionEventListener listener) {
+  public AuctionMessageTranslator(String sniperId, AuctionEventListener listener) {
     this.listener = listener;
+    this.sniper_id = sniperId;
   }
 
   @Override
@@ -23,7 +27,11 @@ public class AuctionMessageTranslator implements MessageListener {
     if ("CLOSE".equals(eventType)) {
       listener.auctionClosed();
     } else if ("PRICE".equals(eventType)) {
-      listener.currentPrice(event.currentPrice(), event.increment());
+      listener.currentPrice(
+        event.currentPrice(),
+        event.increment(),
+        event.isFrom(sniper_id)
+      );
     }
   }
 
@@ -65,6 +73,14 @@ public class AuctionMessageTranslator implements MessageListener {
 
     private int increment() {
       return getInt("Increment");
+    }
+
+    public PriceSource isFrom(String sniperId) {
+      return sniperId.equals(bidder()) ? FromSniper : FromOtherBidder;
+    }
+
+    private String bidder() {
+      return get("Bidder");
     }
   }
 

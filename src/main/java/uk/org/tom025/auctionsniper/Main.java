@@ -49,6 +49,7 @@ public class Main extends Application {
     uiReadySignal.await();
     chat.addMessageListener(
       new AuctionMessageTranslator(
+        connection.getUser().replaceAll("@\\w+/\\w+$", ""),
         new AuctionSniper(auction, new SniperStateDisplayer(mainController))
       )
     );
@@ -147,6 +148,16 @@ public class Main extends Application {
     @Override
     public void sniperBidding() {
       Platform.runLater(() -> mainController.showStatus(STATUS_BIDDING));
+    }
+
+    @Override
+    public void sniperWinning() {
+      Platform.runLater(() -> mainController.showStatus(STATUS_WINNING));
+    }
+
+    @Override
+    public void sniperWon() {
+      Platform.runLater(() -> mainController.showStatus(STATUS_WON));
     }
 
     @Override
