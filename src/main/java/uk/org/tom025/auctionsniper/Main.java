@@ -1,5 +1,6 @@
 package uk.org.tom025.auctionsniper;
 
+import javafx.scene.layout.Pane;
 import uk.org.tom025.auctionsniper.ui.controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -103,7 +104,7 @@ public class Main extends Application {
 
   private void startUserInterface(Stage primaryStage) throws java.io.IOException {
     final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-    final StackPane root = loader.load();
+    final Pane root = loader.load();
     mainController = loader.getController();
     primaryStage.setTitle("Auction Sniper");
     primaryStage.setScene(new Scene(root, 800, 600));
