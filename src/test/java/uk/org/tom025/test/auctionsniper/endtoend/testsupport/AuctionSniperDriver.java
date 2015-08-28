@@ -1,11 +1,17 @@
 package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
+import org.testfx.api.FxAssert;
+import org.testfx.service.finder.NodeFinder;
+import uk.org.tom025.auctionsniper.ui.controller.MainController;
+
 import java.util.concurrent.TimeoutException;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.base.NodeMatchers.hasText;
-import static org.testfx.matcher.base.NodeMatchers.isNotNull;
-import static org.testfx.matcher.control.TableViewMatchers.hasTableCell;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class AuctionSniperDriver {
@@ -17,8 +23,18 @@ public class AuctionSniperDriver {
     return new AuctionSniperDriver();
   }
 
-  public void showsSniperStatus(String status) {
+  public void showsSniperStatus(String itemId, int lastPrice, int lastBid, String status) {
     waitForFxEvents();
-    verifyThat("#snipers", hasTableCell(status));
+    final NodeFinder finder = FxAssert.assertContext().getNodeFinder();
+    final TableView<MainController.Sniper> node = finder.lookup("#snipers").queryFirst();
+    final ObservableList<MainController.Sniper> snipers = node.getItems();
+    final MainController.Sniper sniper = snipers.stream()
+      .filter(sn -> sn.itemId.get().equals("testSlime"))
+      .findFirst()
+      .get();
+
+
+    assertThat(sniper, notNullValue());
+    assertThat(sniper.status.get(), equalTo(status));
   }
 }

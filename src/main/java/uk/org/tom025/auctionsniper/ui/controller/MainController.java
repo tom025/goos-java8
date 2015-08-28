@@ -7,8 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
-import java.util.logging.Logger;
-
 public class MainController {
   public static final String STATUS_JOINING = "joining";
   public static final String STATUS_LOST = "lost";
@@ -23,22 +21,27 @@ public class MainController {
     statusColumn.setCellValueFactory(p -> p.getValue().status);
 
     snipers.setItems(sniperList);
-    sniperList.add(Sniper.newInstance(STATUS_JOINING));
+    sniperList.add(Sniper.newInstance(STATUS_JOINING, "testSlime"));
   }
 
   public void showStatus(String status) {
     sniperList.get(0).status.set(status);
   }
 
-  private static class Sniper {
+  public static class Sniper {
     public final SimpleStringProperty status;
+    public final SimpleStringProperty itemId;
 
-    private static Sniper newInstance(String status) {
-      return new Sniper(new SimpleStringProperty(status));
+    private static Sniper newInstance(String status, String itemId) {
+      return new Sniper(
+        new SimpleStringProperty(status),
+        new SimpleStringProperty(itemId)
+      );
     }
 
-    private Sniper(SimpleStringProperty status) {
+    private Sniper(SimpleStringProperty status, SimpleStringProperty itemId) {
       this.status = status;
+      this.itemId = itemId;
     }
   }
 }

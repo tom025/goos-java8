@@ -3,7 +3,6 @@ package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 import uk.org.tom025.auctionsniper.Main;
 import javafx.application.Application;
 import org.testfx.api.FxToolkit;
-import uk.org.tom025.auctionsniper.ui.controller.MainController;
 
 import java.util.concurrent.TimeoutException;
 
@@ -16,8 +15,10 @@ public class ApplicationRunner {
   public static final String SNIPER_ID = "sniper";
   private AuctionSniperDriver driver;
   private Application application;
+  private String itemId;
 
   public void startBiddingIn(final FakeAuctionServer auction) throws Exception {
+    itemId = auction.getItemId();
     FxToolkit.registerPrimaryStage();
     application = FxToolkit.setupApplication(
       Main.class,
@@ -27,26 +28,26 @@ public class ApplicationRunner {
       auction.getItemId()
     );
     driver = AuctionSniperDriver.newInstance();
-    driver.showsSniperStatus(STATUS_JOINING);
+    driver.showsSniperStatus(itemId, 0, 0, STATUS_JOINING);
   }
 
   public void stop() throws TimeoutException {
     if (application != null) FxToolkit.cleanupApplication(application);
   }
 
-  public void showsSniperHasLostAuction() {
-    driver.showsSniperStatus(STATUS_LOST);
+  public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
+    driver.showsSniperStatus(itemId, lastPrice, lastBid, STATUS_LOST);
   }
 
-  public void hasShownSniperIsBidding() {
-    driver.showsSniperStatus(STATUS_BIDDING);
+  public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
+    driver.showsSniperStatus(itemId, lastPrice, lastBid, STATUS_BIDDING);
   }
 
-  public void hasShownSniperIsWining() {
-    driver.showsSniperStatus(STATUS_WINNING);
+  public void hasShownSniperIsWining(int winningBid) {
+    driver.showsSniperStatus(itemId, winningBid, winningBid, STATUS_WINNING);
   }
 
-  public void showsSniperHasWonAuction() {
-    driver.showsSniperStatus(STATUS_WON);
+  public void showsSniperHasWonAuction(int lastPrice) {
+    driver.showsSniperStatus(itemId, lastPrice, lastPrice, STATUS_WON);
   }
 }
