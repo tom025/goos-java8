@@ -3,11 +3,13 @@ package uk.org.tom025.auctionsniper;
 import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
 
 public class AuctionSniper implements AuctionEventListener {
+  public final String itemId;
   private final Auction auction;
   private final SniperListener listener;
   private boolean isWinning = false;
 
-  public AuctionSniper(Auction auction, SniperListener listener) {
+  public AuctionSniper(String itemId, Auction auction, SniperListener listener) {
+    this.itemId = itemId;
     this.auction = auction;
     this.listener = listener;
   }
@@ -37,5 +39,11 @@ public class AuctionSniper implements AuctionEventListener {
           "Do not know how to handle price source: " + priceSource
         );
     }
+  }
+
+  public static AuctionSniper newInstance(String itemId, Auction auction, SniperListener listener) {
+    final AuctionSniper auctionSniper = new AuctionSniper(itemId, auction, listener);
+    listener.sniperJoined(auctionSniper);
+    return auctionSniper;
   }
 }

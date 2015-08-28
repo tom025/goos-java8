@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
@@ -51,7 +50,7 @@ public class Main extends Application {
     chat.addMessageListener(
       new AuctionMessageTranslator(
         connection.getUser().replaceAll("@\\w+/\\w+$", ""),
-        new AuctionSniper(auction, new SniperStateDisplayer(mainController))
+        AuctionSniper.newInstance(itemId, auction, new SniperStateDisplayer(mainController))
       )
     );
     auction.join();
@@ -159,6 +158,11 @@ public class Main extends Application {
     @Override
     public void sniperWon() {
       Platform.runLater(() -> mainController.showStatus(STATUS_WON));
+    }
+
+    @Override
+    public void sniperJoined(AuctionSniper auctionSniper) {
+      Platform.runLater(() -> mainController.sniperAdded(auctionSniper.itemId, STATUS_JOINING));
     }
 
     @Override

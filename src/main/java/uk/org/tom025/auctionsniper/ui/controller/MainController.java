@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import uk.org.tom025.auctionsniper.AuctionSniper;
 
 public class MainController {
   public static final String STATUS_JOINING = "joining";
@@ -21,18 +22,22 @@ public class MainController {
     statusColumn.setCellValueFactory(p -> p.getValue().status);
 
     snipers.setItems(sniperList);
-    sniperList.add(Sniper.newInstance(STATUS_JOINING, "testSlime"));
   }
+
 
   public void showStatus(String status) {
     sniperList.get(0).status.set(status);
+  }
+
+  public void sniperAdded(String itemId, String status) {
+    sniperList.add(Sniper.newInstance(itemId, status));
   }
 
   public static class Sniper {
     public final SimpleStringProperty status;
     public final SimpleStringProperty itemId;
 
-    private static Sniper newInstance(String status, String itemId) {
+    private static Sniper newInstance(String itemId, String status) {
       return new Sniper(
         new SimpleStringProperty(status),
         new SimpleStringProperty(itemId)

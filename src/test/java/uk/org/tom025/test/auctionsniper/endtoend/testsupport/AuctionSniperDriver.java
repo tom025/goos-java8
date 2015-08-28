@@ -29,7 +29,7 @@ public class AuctionSniperDriver {
     final TableView<MainController.Sniper> node = finder.lookup("#snipers").queryFirst();
     final ObservableList<MainController.Sniper> snipers = node.getItems();
     final MainController.Sniper sniper = snipers.stream()
-      .filter(sn -> sn.itemId.get().equals("testSlime"))
+      .filter(sn -> sn.itemId.get().equals(itemId))
       .findFirst()
       .get();
 
