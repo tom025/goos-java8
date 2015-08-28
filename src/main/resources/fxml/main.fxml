@@ -8,6 +8,7 @@
    <center>
        <TableView fx:id="snipers" prefHeight="Infinity" prefWidth="Infinity" BorderPane.alignment="CENTER">
            <columns>
+               <TableColumn fx:id="itemIdColumn" text="Item Id" minWidth="50" />
                <TableColumn fx:id="statusColumn" text="Status" minWidth="50" />
            </columns>
        </TableView>

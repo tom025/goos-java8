@@ -16,11 +16,12 @@ public class MainController {
   public static final String STATUS_WON = "won";
   @FXML public TableView<Sniper> snipers;
   @FXML public TableColumn<Sniper, String> statusColumn;
+  @FXML public TableColumn<Sniper, String> itemIdColumn;
   private ObservableList<Sniper> sniperList = FXCollections.observableArrayList();
 
   @FXML private void initialize() {
+    itemIdColumn.setCellValueFactory(p -> p.getValue().itemId);
     statusColumn.setCellValueFactory(p -> p.getValue().status);
-
     snipers.setItems(sniperList);
   }
 
