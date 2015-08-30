@@ -3,13 +3,22 @@ package uk.org.tom025.auctionsniper;
 import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
 
 public class AuctionSniper implements AuctionEventListener {
-  public final String itemId;
+  public final SniperSnapshot sniperSnapshot;
   private final Auction auction;
   private final SniperListener listener;
   private boolean isWinning = false;
+  public final String itemId;
 
-  public AuctionSniper(String itemId, Auction auction, SniperListener listener) {
-    this.itemId = itemId;
+  public static AuctionSniper newInstance(String itemId, Auction auction, SniperListener listener) {
+    SniperSnapshot sniperSnapshot = new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+    final AuctionSniper auctionSniper = new AuctionSniper(sniperSnapshot, auction, listener);
+    listener.sniperJoined(auctionSniper);
+    return auctionSniper;
+  }
+
+  public AuctionSniper(SniperSnapshot sniperSnapshot, Auction auction, SniperListener listener) {
+    this.sniperSnapshot = sniperSnapshot;
+    this.itemId = sniperSnapshot.itemId;
     this.auction = auction;
     this.listener = listener;
   }
@@ -40,11 +49,5 @@ public class AuctionSniper implements AuctionEventListener {
           "Do not know how to handle price source: " + priceSource
         );
     }
-  }
-
-  public static AuctionSniper newInstance(String itemId, Auction auction, SniperListener listener) {
-    final AuctionSniper auctionSniper = new AuctionSniper(itemId, auction, listener);
-    listener.sniperJoined(auctionSniper);
-    return auctionSniper;
   }
 }

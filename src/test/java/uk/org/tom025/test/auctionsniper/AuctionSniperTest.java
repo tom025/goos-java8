@@ -13,7 +13,7 @@ public class AuctionSniperTest {
 
   private final SniperListener listener = mock(SniperListener.class);
   private final Auction auction = mock(Auction.class);
-  private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction, listener);
+  private final AuctionSniper sniper = AuctionSniper.newInstance(ITEM_ID, auction, listener);
 
   @Test
   public void reportsLostIfAuctionClosesImmediately() throws Exception {
