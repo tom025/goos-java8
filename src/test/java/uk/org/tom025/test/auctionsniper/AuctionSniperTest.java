@@ -39,13 +39,12 @@ public class AuctionSniperTest {
   public void reportsWinningWhenCurrentPriceComesFromSniper() throws Exception {
     int price = 1001;
     int increment = 7;
-    int bid = price + increment;
     sniper.currentPrice(price, increment, FromSniper);
     verify(listener).sniperWinning(
       new SniperSnapshot(
         ITEM_ID,
         price,
-        bid,
+        price,
         SniperState.WINNING
       )
     );

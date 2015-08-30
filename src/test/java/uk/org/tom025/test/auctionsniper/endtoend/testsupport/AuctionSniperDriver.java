@@ -28,6 +28,7 @@ public class AuctionSniperDriver {
       aRowThatHas(
         aCellInTheColumn("itemIdColumn").withTheValue(itemId),
         aCellInTheColumn("statusColumn").withTheValue(status),
-        aCellInTheColumn("lastPriceColumn").withTheValue(lastPrice))));
+        aCellInTheColumn("lastPriceColumn").withTheValue(lastPrice),
+        aCellInTheColumn("lastBidColumn").withTheValue(lastBid))));
   }
 }

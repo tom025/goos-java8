@@ -25,12 +25,14 @@ public class MainController {
   @FXML public TableColumn<Sniper, String> statusColumn;
   @FXML public TableColumn<Sniper, String> itemIdColumn;
   @FXML public TableColumn<Sniper, String> lastPriceColumn;
+  @FXML public TableColumn<Sniper, String> lastBidColumn;
   private ObservableList<Sniper> sniperList = FXCollections.observableArrayList();
 
   @FXML private void initialize() {
     itemIdColumn.setCellValueFactory(p -> p.getValue().itemId);
     statusColumn.setCellValueFactory(p -> p.getValue().status);
     lastPriceColumn.setCellValueFactory(p -> p.getValue().lastPrice.asString());
+    lastBidColumn.setCellValueFactory(p -> p.getValue().lastBid.asString());
     snipers.setItems(sniperList);
   }
 
@@ -39,8 +41,8 @@ public class MainController {
     sniper.status.set(status);
   }
 
-  public void sniperAdded(String itemId, String status, int lastPrice) {
-    sniperList.add(Sniper.newInstance(itemId, status, lastPrice));
+  public void sniperAdded(String itemId, String status, int lastPrice, int lastBid) {
+    sniperList.add(Sniper.newInstance(itemId, status, lastPrice, lastBid));
   }
 
   public void sniperStatusChanged(SniperSnapshot sniperSnapshot) {
@@ -48,5 +50,6 @@ public class MainController {
     final String statusText = STATUS_TEXT[sniperSnapshot.state.ordinal()];
     sniper.status.set(statusText);
     sniper.lastPrice.set(sniperSnapshot.lastPrice);
+    sniper.lastBid.set(sniperSnapshot.lastBid);
   }
 }

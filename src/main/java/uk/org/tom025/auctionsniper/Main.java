@@ -166,7 +166,7 @@ public class Main extends Application {
 
     @Override
     public void sniperJoined(AuctionSniper auctionSniper) {
-      Platform.runLater(() -> mainController.sniperAdded(auctionSniper.itemId, STATUS_JOINING, 0));
+      Platform.runLater(() -> mainController.sniperAdded(auctionSniper.itemId, STATUS_JOINING, 0, 0));
     }
 
     @Override

@@ -1,9 +1,6 @@
 package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 
-import javafx.scene.control.Labeled;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -40,6 +37,12 @@ public class TableViewMatchers {
       NodeFinder nodeFinder = FxAssert.assertContext().getNodeFinder();
 
       mismatchDescription.appendText("was the table:\n");
+      List<String> columnNames = table.getColumns()
+        .stream()
+        .map(TableColumnBase::getId)
+        .collect(toList());
+      mismatchDescription.appendValueList("", ", ", "\n", columnNames);
+
       Set<TableRow<Object>> tableRows = nodeFinder.from(table).lookup(".table-row-cell").queryAll();
       tableRows
         .forEach(row -> {
