@@ -18,7 +18,7 @@ public class AuctionSniperEndToEndTest {
     application.startBiddingIn(auction);
     auction.hasReceivedJoinRequestFromSniper(SNIPER_ID);
     auction.announceClosed();
-    application.showsSniperHasLostAuction(1000, 1098);
+    application.showsSniperHasLostAuction(0, 0);
   }
 
   @Test
@@ -49,7 +49,7 @@ public class AuctionSniperEndToEndTest {
 
     auction.hasReceivedBid(1098, SNIPER_ID);
 
-    auction.reportPrice(1000, 98, SNIPER_ID);
+    auction.reportPrice(1098, 97, SNIPER_ID);
     application.hasShownSniperIsWining(1098);
 
     auction.announceClosed();

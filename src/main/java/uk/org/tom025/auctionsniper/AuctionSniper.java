@@ -26,13 +26,14 @@ public class AuctionSniper implements AuctionEventListener {
   @Override
   public void currentPrice(int price, int increment, PriceSource priceSource) {
     isWinning = priceSource == FromSniper;
+    int bid = price + increment;
     switch (priceSource) {
       case FromSniper:
-        listener.sniperWinning();
+        listener.sniperWinning(new SniperSnapshot(itemId, price, bid, SniperState.WINNING));
         break;
       case FromOtherBidder:
-        auction.bid(price + increment);
-        listener.sniperBidding();
+        auction.bid(bid);
+        listener.sniperBidding(new SniperSnapshot(itemId, price, bid, SniperState.BIDDING));
         break;
       default:
         throw new UnsupportedOperationException(

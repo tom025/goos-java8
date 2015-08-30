@@ -1,15 +1,15 @@
 package uk.org.tom025.auctionsniper;
 
-import javafx.scene.layout.Pane;
-import uk.org.tom025.auctionsniper.ui.controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import uk.org.tom025.auctionsniper.ui.controller.MainController;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -146,13 +146,17 @@ public class Main extends Application {
     }
 
     @Override
-    public void sniperBidding() {
-      Platform.runLater(() -> mainController.showStatus(STATUS_BIDDING));
+    public void sniperBidding(SniperSnapshot sniperSnapshot) {
+      Platform.runLater(() ->
+        mainController.sniperStatusChanged(sniperSnapshot)
+      );
     }
 
     @Override
-    public void sniperWinning() {
-      Platform.runLater(() -> mainController.showStatus(STATUS_WINNING));
+    public void sniperWinning(SniperSnapshot sniperSnapshot) {
+      Platform.runLater(() ->
+          mainController.sniperStatusChanged(sniperSnapshot)
+      );
     }
 
     @Override
@@ -162,7 +166,7 @@ public class Main extends Application {
 
     @Override
     public void sniperJoined(AuctionSniper auctionSniper) {
-      Platform.runLater(() -> mainController.sniperAdded(auctionSniper.itemId, STATUS_JOINING));
+      Platform.runLater(() -> mainController.sniperAdded(auctionSniper.itemId, STATUS_JOINING, 0));
     }
 
     @Override

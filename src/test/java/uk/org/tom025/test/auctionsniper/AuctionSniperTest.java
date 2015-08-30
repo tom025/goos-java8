@@ -1,20 +1,19 @@
 package uk.org.tom025.test.auctionsniper;
 
 import org.junit.Test;
-import uk.org.tom025.auctionsniper.Auction;
-import uk.org.tom025.auctionsniper.AuctionSniper;
-import uk.org.tom025.auctionsniper.SniperListener;
+import uk.org.tom025.auctionsniper.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.*;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromOtherBidder;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
 
 public class AuctionSniperTest {
+  private static final String ITEM_ID = "ITEM_ID";
 
   private final SniperListener listener = mock(SniperListener.class);
   private final Auction auction = mock(Auction.class);
-  private final String itemId = "itemId";
-  private final AuctionSniper sniper = new AuctionSniper(itemId, auction, listener);
+  private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction, listener);
 
   @Test
   public void reportsLostIfAuctionClosesImmediately() throws Exception {
@@ -38,14 +37,34 @@ public class AuctionSniperTest {
 
   @Test
   public void reportsWinningWhenCurrentPriceComesFromSniper() throws Exception {
-    sniper.currentPrice(1001, 7, FromSniper);
-    verify(listener).sniperWinning();
+    int price = 1001;
+    int increment = 7;
+    int bid = price + increment;
+    sniper.currentPrice(price, increment, FromSniper);
+    verify(listener).sniperWinning(
+      new SniperSnapshot(
+        ITEM_ID,
+        price,
+        bid,
+        SniperState.WINNING
+      )
+    );
   }
 
   @Test
   public void reportsBiddingWhenNewPriceArrivesFromOtherBidder() throws Exception {
-    sniper.currentPrice(1001, 7, FromOtherBidder);
-    verify(listener).sniperBidding();
+    int price = 1001;
+    int increment = 7;
+    int bid = price + increment;
+    sniper.currentPrice(price, increment, FromOtherBidder);
+    verify(listener).sniperBidding(
+      new SniperSnapshot(
+        ITEM_ID,
+        price,
+        bid,
+        SniperState.BIDDING
+      )
+    );
   }
 
   @Test
