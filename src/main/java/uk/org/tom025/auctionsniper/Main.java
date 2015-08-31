@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static java.lang.String.format;
-import static uk.org.tom025.auctionsniper.ui.controller.MainController.*;
 
 public class Main extends Application {
   private static final int ARG_HOSTNAME = 0;
@@ -146,32 +145,16 @@ public class Main extends Application {
     }
 
     @Override
-    public void sniperBidding(SniperSnapshot sniperSnapshot) {
+    public void sniperStateChanged(SniperSnapshot sniperSnapshot) {
       Platform.runLater(() ->
         mainController.sniperStatusChanged(sniperSnapshot)
       );
     }
 
     @Override
-    public void sniperWinning(SniperSnapshot sniperSnapshot) {
-      Platform.runLater(() ->
-          mainController.sniperStatusChanged(sniperSnapshot)
-      );
+    public void sniperAdded(SniperSnapshot sniperSnapshot) {
+      Platform.runLater(() -> mainController.sniperAdded(sniperSnapshot));
     }
 
-    @Override
-    public void sniperWon() {
-      Platform.runLater(() -> mainController.showStatus(STATUS_WON));
-    }
-
-    @Override
-    public void sniperJoined(AuctionSniper auctionSniper) {
-      Platform.runLater(() -> mainController.sniperAdded(auctionSniper.itemId, STATUS_JOINING, 0, 0));
-    }
-
-    @Override
-    public void sniperLost() {
-      Platform.runLater(() -> mainController.showStatus(STATUS_LOST));
-    }
   }
 }

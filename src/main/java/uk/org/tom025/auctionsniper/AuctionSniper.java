@@ -1,18 +1,15 @@
 package uk.org.tom025.auctionsniper;
 
-import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
-
 public class AuctionSniper implements AuctionEventListener {
-  public final SniperSnapshot sniperSnapshot;
   private final Auction auction;
   private final SniperListener listener;
-  private boolean isWinning = false;
   public final String itemId;
+  private SniperSnapshot sniperSnapshot;
 
   public static AuctionSniper newInstance(String itemId, Auction auction, SniperListener listener) {
-    SniperSnapshot sniperSnapshot = new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+    SniperSnapshot sniperSnapshot = SniperSnapshot.joining(itemId);
     final AuctionSniper auctionSniper = new AuctionSniper(sniperSnapshot, auction, listener);
-    listener.sniperJoined(auctionSniper);
+    listener.sniperAdded(auctionSniper.sniperSnapshot);
     return auctionSniper;
   }
 
@@ -25,29 +22,27 @@ public class AuctionSniper implements AuctionEventListener {
 
   @Override
   public void auctionClosed() {
-    if (isWinning) {
-      listener.sniperWon();
-    } else {
-      listener.sniperLost();
-    }
+    sniperSnapshot = sniperSnapshot.closed();
+    notifyChange();
+  }
+
+  private void notifyChange() {
+    listener.sniperStateChanged(sniperSnapshot);
   }
 
   @Override
   public void currentPrice(int price, int increment, PriceSource priceSource) {
-    isWinning = priceSource == FromSniper;
     switch (priceSource) {
       case FromSniper:
-        listener.sniperWinning(new SniperSnapshot(itemId, price, price, SniperState.WINNING));
+        sniperSnapshot = sniperSnapshot.winning(price);
         break;
       case FromOtherBidder:
         int bid = price + increment;
         auction.bid(bid);
-        listener.sniperBidding(new SniperSnapshot(itemId, price, bid, SniperState.BIDDING));
+        sniperSnapshot = sniperSnapshot.bidding(price, bid);
         break;
-      default:
-        throw new UnsupportedOperationException(
-          "Do not know how to handle price source: " + priceSource
-        );
     }
+    notifyChange();
   }
+
 }

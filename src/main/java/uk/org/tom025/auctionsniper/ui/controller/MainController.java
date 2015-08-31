@@ -9,18 +9,6 @@ import uk.org.tom025.auctionsniper.SniperSnapshot;
 import uk.org.tom025.auctionsniper.ui.model.Sniper;
 
 public class MainController {
-  public static final String STATUS_JOINING = "joining";
-  public static final String STATUS_LOST = "lost";
-  public static final String STATUS_BIDDING = "bidding";
-  public static final String STATUS_WINNING = "winning";
-  public static final String STATUS_WON = "won";
-  public static final String[] STATUS_TEXT = {
-    STATUS_JOINING,
-    STATUS_BIDDING,
-    STATUS_WINNING,
-    STATUS_LOST,
-    STATUS_WON
-  };
   @FXML public TableView<Sniper> snipers;
   @FXML public TableColumn<Sniper, String> statusColumn;
   @FXML public TableColumn<Sniper, String> itemIdColumn;
@@ -36,20 +24,13 @@ public class MainController {
     snipers.setItems(sniperList);
   }
 
-  public void showStatus(String status) {
-    final Sniper sniper = sniperList.get(0);
-    sniper.status.set(status);
-  }
-
-  public void sniperAdded(String itemId, String status, int lastPrice, int lastBid) {
-    sniperList.add(Sniper.newInstance(itemId, status, lastPrice, lastBid));
+  public void sniperAdded(SniperSnapshot sniperSnapshot) {
+    sniperList.add(Sniper.newInstance(sniperSnapshot));
   }
 
   public void sniperStatusChanged(SniperSnapshot sniperSnapshot) {
     final Sniper sniper = sniperList.get(0);
-    final String statusText = STATUS_TEXT[sniperSnapshot.state.ordinal()];
-    sniper.status.set(statusText);
-    sniper.lastPrice.set(sniperSnapshot.lastPrice);
-    sniper.lastBid.set(sniperSnapshot.lastBid);
+    sniper.update(sniperSnapshot);
   }
+
 }

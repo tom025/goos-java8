@@ -20,6 +20,10 @@ public class SniperSnapshot {
     this.state = state;
   }
 
+  public static SniperSnapshot joining(String itemId) {
+    return new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -44,5 +48,22 @@ public class SniperSnapshot {
       ", lastBid=" + lastBid +
       ", state=" + state +
       '}';
+  }
+
+  SniperSnapshot winning(int price) {
+    return new SniperSnapshot(itemId, price, price, SniperState.WINNING);
+  }
+
+  SniperSnapshot bidding(int price, int bid) {
+    return new SniperSnapshot(itemId, price, bid, SniperState.BIDDING);
+  }
+
+  public SniperSnapshot closed() {
+    return new SniperSnapshot(
+      itemId,
+      lastPrice,
+      lastBid,
+      state.whenAuctionClosed()
+    );
   }
 }

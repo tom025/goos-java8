@@ -1,12 +1,11 @@
 package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 
-import uk.org.tom025.auctionsniper.Main;
 import javafx.application.Application;
 import org.testfx.api.FxToolkit;
+import uk.org.tom025.auctionsniper.Main;
+import uk.org.tom025.auctionsniper.ui.model.Sniper;
 
 import java.util.concurrent.TimeoutException;
-
-import static uk.org.tom025.auctionsniper.ui.controller.MainController.*;
 
 public class ApplicationRunner {
 
@@ -28,7 +27,7 @@ public class ApplicationRunner {
       auction.getItemId()
     );
     driver = AuctionSniperDriver.newInstance();
-    driver.showsSniperStatus(itemId, 0, 0, STATUS_JOINING);
+    driver.showsSniperStatus(itemId, 0, 0, Sniper.STATUS_JOINING);
   }
 
   public void stop() throws TimeoutException {
@@ -36,18 +35,18 @@ public class ApplicationRunner {
   }
 
   public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
-    driver.showsSniperStatus(itemId, lastPrice, lastBid, STATUS_LOST);
+    driver.showsSniperStatus(itemId, lastPrice, lastBid, Sniper.STATUS_LOST);
   }
 
   public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-    driver.showsSniperStatus(itemId, lastPrice, lastBid, STATUS_BIDDING);
+    driver.showsSniperStatus(itemId, lastPrice, lastBid, Sniper.STATUS_BIDDING);
   }
 
   public void hasShownSniperIsWining(int winningBid) {
-    driver.showsSniperStatus(itemId, winningBid, winningBid, STATUS_WINNING);
+    driver.showsSniperStatus(itemId, winningBid, winningBid, Sniper.STATUS_WINNING);
   }
 
   public void showsSniperHasWonAuction(int lastPrice) {
-    driver.showsSniperStatus(itemId, lastPrice, lastPrice, STATUS_WON);
+    driver.showsSniperStatus(itemId, lastPrice, lastPrice, Sniper.STATUS_WON);
   }
 }
