@@ -9,11 +9,11 @@ import uk.org.tom025.auctionsniper.SniperSnapshot;
 import uk.org.tom025.auctionsniper.ui.model.Sniper;
 
 public class SniperController {
-  @FXML public TableView<Sniper> snipers;
-  @FXML public TableColumn<Sniper, String> statusColumn;
-  @FXML public TableColumn<Sniper, String> itemIdColumn;
-  @FXML public TableColumn<Sniper, String> lastPriceColumn;
-  @FXML public TableColumn<Sniper, String> lastBidColumn;
+  @FXML private TableView<Sniper> snipers;
+  @FXML private TableColumn<Sniper, String> statusColumn;
+  @FXML private TableColumn<Sniper, String> itemIdColumn;
+  @FXML private TableColumn<Sniper, String> lastPriceColumn;
+  @FXML private TableColumn<Sniper, String> lastBidColumn;
   private ObservableList<Sniper> sniperList = FXCollections.observableArrayList();
 
   @FXML private void initialize() {
