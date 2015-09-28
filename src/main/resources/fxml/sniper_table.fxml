@@ -1,0 +1,14 @@
+<?import javafx.scene.control.*?>
+<TableView xmlns="http://javafx.com/javafx/8"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:id="snipers"
+           prefHeight="Infinity"
+           prefWidth="Infinity"
+           fx:controller="uk.org.tom025.auctionsniper.ui.controller.SniperController">
+    <columns>
+        <TableColumn fx:id="itemIdColumn" text="Item Id" minWidth="50" />
+        <TableColumn fx:id="statusColumn" text="Status" minWidth="50" />
+        <TableColumn fx:id="lastPriceColumn" text="Last Price" minWidth="50" />
+        <TableColumn fx:id="lastBidColumn" text="Last Bid" minWidth="50" />
+    </columns>
+</TableView>

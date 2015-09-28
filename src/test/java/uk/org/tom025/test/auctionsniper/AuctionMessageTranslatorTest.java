@@ -6,8 +6,10 @@ import org.junit.Test;
 import uk.org.tom025.auctionsniper.AuctionEventListener;
 import uk.org.tom025.auctionsniper.AuctionMessageTranslator;
 
-import static org.mockito.Mockito.*;
-import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromOtherBidder;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
 
 public class AuctionMessageTranslatorTest {
   private static final Chat UNUSED_CHAT = null;

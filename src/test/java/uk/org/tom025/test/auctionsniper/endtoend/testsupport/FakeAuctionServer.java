@@ -1,12 +1,12 @@
 package uk.org.tom025.test.auctionsniper.endtoend.testsupport;
 
-import uk.org.tom025.auctionsniper.Main;
 import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import uk.org.tom025.auctionsniper.Main;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

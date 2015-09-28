@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
-import static uk.org.tom025.auctionsniper.AuctionEventListener.*;
-import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.*;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromOtherBidder;
+import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
 
 public class AuctionMessageTranslator implements MessageListener {
   private final AuctionEventListener listener;
