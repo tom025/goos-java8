@@ -49,7 +49,7 @@ public class Main extends Application {
     chat.addMessageListener(
       new AuctionMessageTranslator(
         connection.getUser().replaceAll("@\\w+/\\w+$", ""),
-        AuctionSniper.newInstance(itemId, auction, new SniperStateDisplayer(mainController))
+        AuctionSniper.newInstance(itemId, auction, new FXThreadSniperListener(mainController))
       )
     );
     auction.join();
@@ -137,10 +137,10 @@ public class Main extends Application {
 
   }
 
-  private static class SniperStateDisplayer implements SniperListener {
+  private static class FXThreadSniperListener implements SniperListener {
     private final MainController mainController;
 
-    public SniperStateDisplayer(MainController mainController) {
+    public FXThreadSniperListener(MainController mainController) {
       this.mainController = mainController;
     }
 
