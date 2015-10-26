@@ -15,21 +15,24 @@ import static java.util.stream.Collectors.toList;
 
 public class TableViewMatchers {
   public static class TableMatcher extends TypeSafeDiagnosingMatcher<TableView<Object>> {
-    private final Matcher<TableRow<Object>> tableRowMatcher;
+    private final List<TableViewMatcher> tableMatchers;
 
-    private TableMatcher(Matcher<TableRow<Object>> tableRowMatcher) {
-      this.tableRowMatcher = tableRowMatcher;
+    private TableMatcher(List<TableViewMatcher> tableMatchers) {
+      this.tableMatchers = tableMatchers;
     }
 
-    public static Matcher<TableView<Object>> isATableWith(Matcher<TableRow<Object>> tableRowMatcher) {
-      return new TableMatcher(tableRowMatcher);
+    public static Matcher<TableView<Object>> isATable(List<TableViewMatcher> tableMatchers) {
+      return new TableMatcher(tableMatchers);
+    }
+
+    public static List<TableViewMatcher> with(TableViewMatcher... tableMatchers) {
+      return asList(tableMatchers);
     }
 
     @Override
     public void describeTo(Description description) {
-      description
-        .appendText("is a table with ")
-        .appendDescriptionOf(tableRowMatcher);
+      description.appendText("is a table with ")
+        .appendList("", ", ", "", tableMatchers);
     }
 
     @Override
@@ -39,7 +42,7 @@ public class TableViewMatchers {
       mismatchDescription.appendText("was the table:\n");
       List<String> columnNames = table.getColumns()
         .stream()
-        .map(TableColumnBase::getId)
+        .map(TableColumnBase::getText)
         .collect(toList());
       mismatchDescription.appendValueList("", ", ", "\n", columnNames);
 
@@ -56,11 +59,13 @@ public class TableViewMatchers {
           }
         });
 
-      return tableRows.stream().anyMatch(tableRowMatcher::matches);
+      return tableMatchers.stream().allMatch(tableMatcher ->
+          tableMatcher.matches(table)
+      );
     }
   }
 
-  public static class TableRowMatcher extends TypeSafeDiagnosingMatcher<TableRow<Object>> {
+  public static class TableRowMatcher extends TableViewMatcher {
     private final List<Matcher<TableCell<Object, Object>>> matchers;
 
     private TableRowMatcher(List<Matcher<TableCell<Object, Object>>> matchers) {
@@ -68,7 +73,7 @@ public class TableViewMatchers {
     }
 
     @SafeVarargs
-    public static Matcher<TableRow<Object>> aRowThatHas(Matcher<TableCell<Object, Object>>... matchers) {
+    public static TableRowMatcher aRowThatHas(Matcher<TableCell<Object, Object>>... matchers) {
       return new TableRowMatcher(asList(matchers));
     }
 
@@ -80,12 +85,15 @@ public class TableViewMatchers {
     }
 
     @Override
-    protected boolean matchesSafely(TableRow<Object> row, Description mismatchDescription) {
-      NodeFinder finder = FxAssert.assertContext().getNodeFinder();
-      Set<TableCell<Object, Object>> cells = finder.from(row).lookup(".table-cell").queryAll();
-      return matchers.stream().allMatch(matcher ->
-        cells.stream().anyMatch(matcher::matches)
-      );
+    protected boolean matchesSafely(TableView<Object> table, Description mismatchDescription) {
+      NodeFinder nodeFinder = FxAssert.assertContext().getNodeFinder();
+      Set<TableRow<Object>> tableRows = nodeFinder.from(table).lookup(".table-row-cell").queryAll();
+      return tableRows.stream().anyMatch((row) -> {
+        Set<TableCell<Object, Object>> cells = nodeFinder.from(row).lookup(".table-cell").queryAll();
+        return matchers.stream().allMatch(matcher ->
+            cells.stream().anyMatch(matcher::matches)
+        );
+      });
     }
   }
 
@@ -130,5 +138,45 @@ public class TableViewMatchers {
         return new TableCellMatcher<>(columnName, value);
       }
     }
+  }
+
+  public static class TableColumnTitlesMatcher extends TableViewMatcher {
+
+    private final List<String> expectedTitles;
+
+    public static TableColumnTitlesMatcher columnTitles(String... titles) {
+      return new TableColumnTitlesMatcher(asList(titles));
+    }
+
+    public TableColumnTitlesMatcher(List<String> expectedTitles) {
+      this.expectedTitles = expectedTitles;
+    }
+
+    @Override
+    protected boolean matchesSafely(
+      TableView<Object> table,
+      Description mismatchDescription
+    ) {
+      List<String> columnTitles = table.getColumns().stream()
+        .map(TableColumnBase::getText)
+        .collect(toList());
+      mismatchDescription.appendValueList(
+        "",
+        ", ",
+        "",
+        columnTitles
+      );
+      return columnTitles.containsAll(expectedTitles);
+    }
+
+    @Override
+    public void describeTo(Description description) {
+      description
+        .appendText("columns with titles ")
+        .appendValueList("", ", ", "", expectedTitles);
+    }
+  }
+
+  public static abstract class TableViewMatcher extends TypeSafeDiagnosingMatcher<TableView<Object>> {
   }
 }

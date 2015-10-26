@@ -27,6 +27,7 @@ public class ApplicationRunner {
       auction.getItemId()
     );
     driver = AuctionSniperDriver.newInstance();
+    driver.hasColumnTitles();
     driver.showsSniperStatus(itemId, 0, 0, Sniper.STATUS_JOINING);
   }
 
