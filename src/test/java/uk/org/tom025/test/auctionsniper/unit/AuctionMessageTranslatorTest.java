@@ -1,4 +1,4 @@
-package uk.org.tom025.test.auctionsniper;
+package uk.org.tom025.test.auctionsniper.unit;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.packet.Message;

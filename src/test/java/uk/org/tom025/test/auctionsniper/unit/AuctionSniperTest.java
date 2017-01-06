@@ -1,5 +1,6 @@
-package uk.org.tom025.test.auctionsniper;
+package uk.org.tom025.test.auctionsniper.unit;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromOtherBidder;
 import static uk.org.tom025.auctionsniper.AuctionEventListener.PriceSource.FromSniper;
-import static uk.org.tom025.test.auctionsniper.AuctionSniperTest.SniperSnapshotWithStateMatcher.aSniperWithState;
+import static uk.org.tom025.test.auctionsniper.unit.AuctionSniperTest.SniperSnapshotWithStateMatcher.aSniperWithState;
 
 public class AuctionSniperTest {
   private static final String ITEM_ID = "ITEM_ID";
@@ -22,7 +23,7 @@ public class AuctionSniperTest {
   public void reportsLostIfAuctionClosesImmediately() throws Exception {
     sniper.auctionClosed();
     verify(listener).sniperStateChanged(
-      argThat(is(aSniperWithState(SniperState.LOST)))
+      argThat(CoreMatchers.is(aSniperWithState(SniperState.LOST)))
     );
   }
 
@@ -30,11 +31,11 @@ public class AuctionSniperTest {
   public void reportsLostIfAuctionClosesWhenBidding() throws Exception {
     sniper.currentPrice(1001, 7, FromOtherBidder);
     verify(listener).sniperStateChanged(
-      argThat(is(aSniperWithState(SniperState.BIDDING)))
+      argThat(CoreMatchers.is(aSniperWithState(SniperState.BIDDING)))
     );
     sniper.auctionClosed();
     verify(listener, atLeastOnce()).sniperStateChanged(
-      argThat(is(aSniperWithState(SniperState.LOST)))
+      argThat(CoreMatchers.is(aSniperWithState(SniperState.LOST)))
     );
   }
 
@@ -42,11 +43,11 @@ public class AuctionSniperTest {
   public void reportsWonIfAuctionClosesWhenWinning() throws Exception {
     sniper.currentPrice(1001, 7, FromSniper);
     verify(listener).sniperStateChanged(
-      argThat(is(aSniperWithState(SniperState.WINNING)))
+      argThat(CoreMatchers.is(aSniperWithState(SniperState.WINNING)))
     );
     sniper.auctionClosed();
     verify(listener).sniperStateChanged(
-      argThat(is(aSniperWithState(SniperState.WON)))
+      argThat(CoreMatchers.is(aSniperWithState(SniperState.WON)))
     );
   }
 
